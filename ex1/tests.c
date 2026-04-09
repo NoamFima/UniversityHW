@@ -20,7 +20,10 @@ int test_cipher_non_cyclic_lower_case_positive_k ()
 // See full documentation in header file
 int test_cipher_cyclic_lower_case_special_char_positive_k ()
 {
-
+  char in[] = "xyz!";
+  char out[] = "zab!";
+  cipher (in, 2);
+  return strcmp (in, out) != 0;
 }
 
 // See full documentation in header file
