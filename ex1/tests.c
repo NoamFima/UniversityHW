@@ -1,5 +1,7 @@
 #include "tests.h"
 
+#include <string.h>
+
 #define K_1 3
 
 // See full documentation in header file
@@ -9,12 +11,16 @@ int test_cipher_non_cyclic_lower_case_positive_k ()
   char out[] = "def";
   cipher (in, K_1);
   return strcmp (in, out) != 0;
+
 }
+
+// See full documentation in header file
+#include <string.h>
 
 // See full documentation in header file
 int test_cipher_cyclic_lower_case_special_char_positive_k ()
 {
-  // your code goes here
+
 }
 
 // See full documentation in header file
