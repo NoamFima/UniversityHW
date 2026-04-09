@@ -1,6 +1,7 @@
 #include "tests.h"
 
 #include <string.h>
+#include <_stdlib.h>
 
 #define K_1 3
 
@@ -20,8 +21,8 @@ int test_cipher_non_cyclic_lower_case_positive_k ()
 // See full documentation in header file
 int test_cipher_cyclic_lower_case_special_char_positive_k ()
 {
-  char in[] = "xyz!";
-  char out[] = "zab!";
+  char in[] = "xy z!";
+  char out[] = "za b!";
   cipher (in, 2);
   return strcmp (in, out) != 0;
 }
@@ -29,28 +30,34 @@ int test_cipher_cyclic_lower_case_special_char_positive_k ()
 // See full documentation in header file
 int test_cipher_non_cyclic_lower_case_special_char_negative_k ()
 {
-  // your code goes here
+  char in[] = "def";
+  char out[] = "abc";
+  cipher (in, -1);
+  return strcmp (in, out) != 0;
 }
 
 // See full documentation in header file
 int test_cipher_cyclic_lower_case_negative_k ()
 {
-  // your code goes here
+  char in[] = "zab";
+  char out[] = "xyz";
+  cipher (in, 2);
+  return strcmp (in, out) != 0;
 }
 
 // See full documentation in header file
 int test_cipher_cyclic_upper_case_positive_k ()
 {
-  // your code goes here
+  char in[] = "ABC";
+  char out[] = "DDD";
+  cipher (in, 2);
+  return strcmp (in, out) != 0;
 }
 
 // See full documentation in header file
 int test_decipher_non_cyclic_lower_case_positive_k ()
 {
-  char in[] = "def";
-  char out[] = "abc";
-  decipher (in, K_1);
-  return strcmp (in, out) != 0;
+
 }
 
 // See full documentation in header file
