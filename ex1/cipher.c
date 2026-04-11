@@ -6,43 +6,27 @@
 /// IN THIS FILE, IMPLEMENT EVERY FUNCTION THAT'S DECLARED IN cipher.h.
 
 // See full documentation in header file
+#define BOTTOM_CAPITAL 'A'
+#define BOTTOM_LOWER 'a'
+#define TOP_LOWER 'z'
+#define TOP_CAPITAL 'Z'
+#define ALPHABET_MAX 26
 void cipher(char s[], int k)
 {
+  k = k % 26;
   for (int char_index = 0; s[char_index] != '\0'; char_index++)
   {
-    int round_back;
 
-    // lowercase
-    if (s[char_index] >= 'a' && s[char_index] <= 'z')
-    {
-      round_back = s[char_index] + k;
+      if (s[char_index] >= BOTTOM_LOWER && s[char_index] <= TOP_LOWER) {
 
-      if (round_back >= 'a' && round_back <= 'z') {
-        s[char_index] = round_back;
-      }
-      else if (round_back > 'z') {
-        s[char_index] = 'a' + (round_back - 'z' - 1);
-      }
-      else if (round_back < 'a') {
-        s[char_index] = 'z' - ('a' - round_back - 1);
-      }
-    }
+        s[char_index] = ((s[char_index] - BOTTOM_LOWER + k + 26) % 26) + BOTTOM_LOWER; // formula converts the letter values like the alphabet from 0-26
+                                                                                       // and makes sure negative k's dont screw up the modulo by adding 26 at the end
+                                                                                       // for example: a-a = 0 + k (=3) = 3 + 26 =29 % 26 = 3 + 'a' = d
 
-    // uppercase
-    else if (s[char_index] >= 'A' && s[char_index] <= 'Z')
-    {
-      round_back = s[char_index] + k;
+      }else if (s[char_index] >= BOTTOM_CAPITAL && s[char_index] <= TOP_CAPITAL) {
+        s[char_index] = ((s[char_index] - BOTTOM_CAPITAL + k + 26) % 26) + BOTTOM_CAPITAL;
+      }
 
-      if (round_back >= 'A' && round_back <= 'Z') {
-        s[char_index] = round_back;
-      }
-      else if (round_back > 'Z') {
-        s[char_index] = 'A' + (round_back - 'Z' - 1);
-      }
-      else if (round_back < 'A') {
-        s[char_index] = 'Z' - ('A' - round_back - 1);
-      }
-    }
   }
 }
 
