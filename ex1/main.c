@@ -73,6 +73,7 @@ int run_all_tests() {
 
     if (test_decipher_cyclic_upper_case_positive_k () != 0) { return EXIT_FAILURE; }
 
+
     return EXIT_SUCCESS;
 }
 
