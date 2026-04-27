@@ -14,6 +14,7 @@
 #define DURATION_ERROR "Error: duration should be an integer between 10 and 100 (includes)\n"
 #define NAME_ERROR "Error: bus name should contains only digits and small chars\n"
 #define LINES_ERROR "Error: number of lines should be a positive integer\n"
+#define INPUT_ERROR "Error: invalid input\n"
 #define USAGE_ERROR "Usage: sort_lines <by_distance|by_duration|by_frequency|by_name|test>\n"
 
 #define BUS_NAME_MAX 21
@@ -32,17 +33,22 @@
 #define CHAR_LOWER 'a'
 #define CHAR_UPPER 'z'
 
-int check_parameters(char bus_name[], int distance, int duration, int frequency)
+int check_parameters(const char bus_name[],
+                     int distance,
+                     int duration,
+                     int frequency)
 {
     for (int name_counter = 0;
-     bus_name[name_counter] != '\0';
-     name_counter++)
+         bus_name[name_counter] != '\0';
+         name_counter++)
     {
         char current_char = bus_name[name_counter];
 
-        int is_digit = current_char >= DIGIT_LOWER && current_char <= DIGIT_UPPER;
+        int is_digit = current_char >= DIGIT_LOWER &&
+                       current_char <= DIGIT_UPPER;
 
-        int is_small_letter = current_char >= CHAR_LOWER && current_char <= CHAR_UPPER;
+        int is_small_letter = current_char >= CHAR_LOWER &&
+                              current_char <= CHAR_UPPER;
 
         if (!is_digit && !is_small_letter)
         {
@@ -72,7 +78,7 @@ int check_parameters(char bus_name[], int distance, int duration, int frequency)
     return EXIT_SUCCESS;
 }
 
-void reset_busline(BusLine *copy, BusLine *bus_list, int number_of_lines)
+void reset_busline(const BusLine *copy,BusLine *bus_list, int number_of_lines)
 {
     for (int i = 0; i < number_of_lines; i++)
     {
@@ -80,13 +86,17 @@ void reset_busline(BusLine *copy, BusLine *bus_list, int number_of_lines)
     }
 }
 
-void print_bus_lines(BusLine *start, BusLine *end)
+void print_bus_lines(const BusLine *start, const BusLine *end)
 {
-    BusLine *curr = start;
+    const BusLine *curr = start;
 
     while (curr <= end)
     {
-        printf("%s,%d,%d,%d\n", curr->name, curr->distance, curr->duration, curr->frequency);
+        printf("%s,%d,%d,%d\n",
+               curr->name,
+               curr->distance,
+               curr->duration,
+               curr->frequency);
         curr++;
     }
 }
@@ -117,13 +127,13 @@ int run_all_tests(BusLine *bus_list, BusLine *end, int number_of_lines)
     printf("TEST 4 %s: same items\n", is_equal(bus_list, end, copy, copy_end) ? "PASSED" : "FAILED");
     reset_busline(copy, bus_list, number_of_lines);
 
-    bus_quick_sort(bus_list, end, DISTANCE);
-    printf("TEST 5 %s: sorted by distance\n", is_sorted_by_distance(bus_list, end) ? "PASSED" : "FAILED");
+    bus_quick_sort(bus_list, end, FREQUENCY);
+    printf("TEST 5 %s: sorted by frequency\n", is_sorted_by_frequency(bus_list, end) ? "PASSED" : "FAILED");
     printf("TEST 6 %s: same items\n", is_equal(bus_list, end, copy, copy_end) ? "PASSED" : "FAILED");
     reset_busline(copy, bus_list, number_of_lines);
 
-    bus_quick_sort(bus_list, end, FREQUENCY);
-    printf("TEST 7 %s: sorted by frequency\n", is_sorted_by_frequency(bus_list, end) ? "PASSED" : "FAILED");
+    bus_bubble_sort(bus_list, end);
+    printf("TEST 7 %s: sorted by name\n", is_sorted_by_name(bus_list, end) ? "PASSED" : "FAILED");
     printf("TEST 8 %s: same items\n", is_equal(bus_list, end, copy, copy_end) ? "PASSED" : "FAILED");
     reset_busline(copy, bus_list, number_of_lines);
 
@@ -157,9 +167,13 @@ BusLine *get_bus(int number_of_lines)
         char bus_name[BUS_NAME_MAX];
         int distance, duration, frequency;
 
-        if (sscanf(line_input, "%20[^,],%d,%d,%d", bus_name, &distance, &duration, &frequency) != 4)
+        if (sscanf(line_input, "%20[^,],%d,%d,%d",
+                   bus_name,
+                   &distance,
+                   &duration,
+                   &frequency) != 4)
         {
-            printf("Error: invalid input\n");
+            printf(INPUT_ERROR);
             continue;
         }
 
@@ -179,13 +193,36 @@ BusLine *get_bus(int number_of_lines)
     return bus_list;
 }
 
-int is_valid_arg(char arg[])
+int is_valid_arg(const char arg[])
 {
     return strcmp(arg, "by_name") == 0 ||
            strcmp(arg, "by_distance") == 0 ||
            strcmp(arg, "by_duration") == 0 ||
            strcmp(arg, "by_frequency") == 0 ||
            strcmp(arg, "test") == 0;
+}
+
+int get_number_of_lines(int *number_of_lines)
+{
+    char input[MAX_LINE_LENGTH];
+
+    while (1)
+    {
+        printf(NUMBER_REQUEST);
+
+        if (fgets(input, sizeof(input), stdin) == NULL)
+        {
+            return EXIT_FAILURE;
+        }
+
+        if (sscanf(input, "%d", number_of_lines) == 1 &&
+            *number_of_lines > 0)
+        {
+            return EXIT_SUCCESS;
+        }
+
+        printf(LINES_ERROR);
+    }
 }
 
 int main(int argc, char *argv[])
@@ -196,20 +233,10 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
-    printf(NUMBER_REQUEST);
-
-    char input[MAX_LINE_LENGTH];
-
-    if (fgets(input, sizeof(input), stdin) == NULL)
-    {
-        return EXIT_FAILURE;
-    }
-
     int number_of_lines;
 
-    if (sscanf(input, "%d", &number_of_lines) != 1 || number_of_lines <= 0)
+    if (get_number_of_lines(&number_of_lines) == EXIT_FAILURE)
     {
-        printf(LINES_ERROR);
         return EXIT_FAILURE;
     }
 
