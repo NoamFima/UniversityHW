@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
 
     free_database(&markov_chain);
 
-    return SUCCESS_EXIT;
-    
+    return EXIT_SUCCESS;
+
 }
 
