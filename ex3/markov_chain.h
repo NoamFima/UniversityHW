@@ -89,4 +89,5 @@ MarkovNode* get_next_random_node(MarkovNode *cur_markov_node);
 void generate_tweet(MarkovNode *first_node, int max_length);
 
 
+
 #endif /* _MARKOV_CHAIN_H_ */
